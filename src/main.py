@@ -4,6 +4,8 @@ import logging
 import pyudev
 import signal
 
+from device_definitions import devices as registered_devices
+
 logging.basicConfig(format='%(asctime)s %(levelname)-8s - %(message)s', level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
@@ -12,10 +14,14 @@ def usb_device_event(action, device):
     id_vendor = device.get("ID_VENDOR")
     if not id_model or not id_vendor:
         return
-    if action == "add":
-        logger.info("Device '{}:{}' added".format(id_model, id_vendor))
-    elif action == "remove":
-        logger.info("Device '{}:{}' removed".format(id_model, id_vendor))
+    for rd in registered_devices:
+        if id_model == rd.get("ID_MODEL") and id_vendor == rd.get("ID_VENDOR"):
+            if action == "add":
+                logger.info("Device '{}:{}' added".format(id_model, id_vendor))
+            elif action == "remove":
+                logger.info("Device '{}:{}' removed".format(id_model, id_vendor))
+            break
+
 
 def signal_handler(signal, frame):
     logger.info("serial2rfc2217 gateway program stopped")
@@ -32,7 +38,6 @@ if __name__ == "__main__":
     monitor.filter_by('tty')
 
     usb_stick_observer = pyudev.MonitorObserver(monitor, usb_device_event)
-
     usb_stick_observer.start()
 
     signal.signal(signal.SIGINT, signal_handler)
