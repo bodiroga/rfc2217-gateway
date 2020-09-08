@@ -71,8 +71,12 @@ class MDNSAdvertiser(object):
     def __start_advertising(self):
         self.service = ServiceInfo("{}._tcp.local.".format(self.type),
                                    "{}.{}._tcp.local.".format(self.name, self.type),
-                                   socket.inet_aton(self.address), self.port, 0, 0,
-                                   self.properties, "{}.local.".format(self.server))
+                                   port=self.port,
+                                   weight=0,
+                                   priority=0,
+                                   properties=self.properties,
+                                   server="{}.local.".format(self.server),
+                                   addresses=[socket.inet_aton(self.address)])
 
         zeroconf = Zeroconf()
         zeroconf.register_service(self.service)
