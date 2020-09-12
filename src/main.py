@@ -8,8 +8,9 @@ import time
 from device_definitions import devices as registered_devices
 from mdns_advertiser import MDNSAdvertiser
 from rfc2217_device import RFC2217Device
+from usb_device_helper import UsbDeviceHelper
 
-logging.basicConfig(format='%(asctime)s %(levelname)-8s - %(message)s', level=logging.DEBUG)
+logging.basicConfig(format='%(asctime)s %(levelname)-6s - %(name)-16s - %(message)s', level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 INTERFACE = "wlp2s0"
@@ -17,51 +18,19 @@ INTERFACE = "wlp2s0"
 rfc_devices = {}
 rfc_advertisers = {}
 
-def properties_from_device(device):
-    model_id = device.get("ID_MODEL_ID", "")
-    model = device.get("ID_MODEL", "")
-    model_enc = device.get("ID_MODEL_ENC", "")
-    model_db = device.get("ID_MODEL_FROM_DATABASE", "")
-    vendor_id = device.get("ID_VENDOR_ID", "")
-    vendor = device.get("ID_VENDOR_FROM_DATABASE", "")
-    vendor_enc = device.get("ID_VENDOR_ENC", "")
-    vendor_db = device.get("ID_VENDOR_FROM_DATABASE", "")
-    serial = device.get("ID_SERIAL", "")
-    serial_short = device.get("ID_SERIAL_SHORT", "")
-
-    properties = { "MODEL_ID": model_id, "MODEL": model,
-                   "MODEL_ENC": model_enc, "MODEL_DB": model_db,
-                   "VENDOR_ID": vendor_id, "VENDOR": vendor,
-                   "VENDOR_ENC": vendor_enc, "VENDOR_DB": vendor_db,
-                   "SERIAL": serial, "SERIAL_SHORT": serial_short }
-
-    return properties
-
-
-def search_in_registered_devices(device, registered_devices):
-    for rd in registered_devices:
-        match = True
-        for id, value in rd["ID"].items():
-            if device.get(id) != value:
-                match = False
-                break
-        if match:
-            return rd
-
-
 def usb_device_event(action, device):
     id_model = device.get("ID_MODEL_ID")
     id_vendor = device.get("ID_VENDOR_ID")
     serial_port = device.get("DEVNAME")
     if not id_model or not id_vendor:
         return
-    rd = search_in_registered_devices(device, registered_devices)
+    rd = usb_helper.search_in_registered_devices(device)
     if not rd:
         return
     if action == "add":
         tpc_port = rd.get("PORT")
         logger.info("Device '{}:{}' ('{}') added".format(id_model, id_vendor, serial_port))
-        properties = properties_from_device(device)
+        properties = usb_helper.properties_from_device(device)
         advertiser = MDNSAdvertiser("_rfc2217", "RFC2217 ({}:{})".format(id_vendor, id_model),
                                 rd.get("PORT"), properties, None, INTERFACE)
         device = RFC2217Device(serial_port, tpc_port)
@@ -87,6 +56,8 @@ def signal_handler(signal, frame):
 
 if __name__ == "__main__":
     logger.info("RFC2217 Gateway started")
+
+    usb_helper = UsbDeviceHelper(registered_devices)
 
     context = pyudev.Context()
     for device in context.list_devices(subsystem='tty'):
