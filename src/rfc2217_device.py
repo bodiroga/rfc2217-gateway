@@ -61,7 +61,7 @@ class RFC2217Device(object):
             except BlockingIOError:
                 time.sleep(0.5)
                 continue
-            logging.debug('Connected by {}:{}'.format(addr[0], addr[1]))
+            logger.debug('Connected by {}:{}'.format(addr[0], addr[1]))
             client_socket.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
             self.s_port.dtr = True
             self.s_port.rts = True
@@ -70,7 +70,10 @@ class RFC2217Device(object):
                 self.s_redirector.shortcircuit()
             finally:
                 self.s_redirector.stop()
-                client_socket.shutdown(socket.SHUT_RDWR)
+                try:
+                    client_socket.shutdown(socket.SHUT_RDWR)
+                except OSError:
+                    logger.warn("socket shutdown error")
                 client_socket.close()
                 try:
                     self.s_port.rts = False
