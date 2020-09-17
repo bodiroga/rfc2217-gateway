@@ -30,7 +30,7 @@ class Redirector(object):
     def statusline_poller(self):
         self.log.debug('status line poll thread started')
         while self.alive:
-            time.sleep(1)
+            time.sleep(0.5)
             try:
                 self.rfc2217.check_modem_lines()
             except OSError:
