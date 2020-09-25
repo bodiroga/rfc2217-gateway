@@ -4,13 +4,14 @@ import logging
 import pyudev
 import signal
 import time
+import config
 
 from usb_devices_handler import UsbDevicesHandler
 
 logging.basicConfig(format='%(asctime)s %(levelname)-6s - %(name)-16s - %(message)s', level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-INTERFACE = "wlp2s0"
+INTERFACE = config.config.get("INTERFACE") or "wlp2s0"
 
 
 def usb_device_event(action, device):
