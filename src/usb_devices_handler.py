@@ -80,9 +80,10 @@ class UsbDevice(object):
         self.mdns_advertiser = None
 
     def start(self):
-        logger.info("Device '{}' ('{}') has been created on port {}".format(self.gateway_device.get_name(), self.gateway_device.get_serial_port(), self.gateway_device.get_tcp_port()))
+        logger.info("Device '{}' ('{}') - type {} - has been created on port {}".format(self.gateway_device.get_name(), self.gateway_device.get_serial_port(), self.gateway_device.__class__.__name__ , self.gateway_device.get_tcp_port()))
+        __type = "{}._rfc2217".format(self.gateway_device.get_protocol()) if self.gateway_device.get_protocol() else "_rfc2217"
         self.mdns_advertiser = MDNSAdvertiser(
-                                "_rfc2217", "RFC2217 ({}:{}:{}:{})".format(self.gateway_device.get_id_vendor(), self.gateway_device.get_id_model(), self.gateway_device.get_id_vendor_enc(), self.gateway_device.get_serial_id()),
+                                __type, "RFC2217 ({}:{}:{}:{})".format(self.gateway_device.get_id_vendor(), self.gateway_device.get_id_model(), self.gateway_device.get_id_vendor_enc(), self.gateway_device.get_serial_id()),
                                 self.gateway_device.get_tcp_port(), self.gateway_device.get_properties(),
                                 None, self.network_interface)
         self.rfc2217_connection = RFC2217Device(self.gateway_device.get_serial_port(), self.gateway_device.get_tcp_port())

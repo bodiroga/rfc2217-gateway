@@ -16,6 +16,7 @@ class SaradGatewayDevice(GenericGatewayDevice):
     ID_VENDOR_ID = "0403"
     ID_VENDOR_ENC = "SARAD"
     PORT_RANGE = [5560, 5580]
+    PROTOCOL = "sarad-1688"
     
     def __init__(self, device):
         super().__init__(device)

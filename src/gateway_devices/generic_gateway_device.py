@@ -16,6 +16,7 @@ class GenericGatewayDevice(object):
     ID_VENDOR_ENC = ""
     PORT = ""
     PORT_RANGE = []
+    PROTOCOL = ""
     
     _isPortRangeInit = False
     _availablePorts = []
@@ -72,6 +73,9 @@ class GenericGatewayDevice(object):
 
     def get_name(self):
         return self.NAME
+    
+    def get_protocol(self):
+        return self.PROTOCOL
 
     def get_tcp_port(self):
         return self._selectedPort
