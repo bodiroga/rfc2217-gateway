@@ -65,8 +65,8 @@ class RFC2217Device(object):
             client_socket.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
             self.s_port.dtr = True
             self.s_port.rts = True
-            self.s_redirector = Redirector(self.s_port, client_socket)
             try:
+                self.s_redirector = Redirector(self.s_port, client_socket)
                 self.s_redirector.shortcircuit()
             finally:
                 self.s_redirector.stop()
