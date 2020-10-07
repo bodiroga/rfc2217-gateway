@@ -15,3 +15,6 @@ class FTDIGatewayDevice(GenericGatewayDevice):
     ID_VENDOR_ID = "0403"
     ID_VENDOR_ENC = "FTDI"
     PORT = 5581
+
+    def get_name_unique(self):    
+        return f'{self.get_serial_short()}'
