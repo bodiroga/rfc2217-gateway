@@ -45,18 +45,18 @@ class SaradGatewayDevice(GenericGatewayDevice):
             vendor = self.device.get("ID_VENDOR_FROM_DATABASE", "")
             vendor_enc = self.device.get("ID_VENDOR_ENC", "")
             vendor_db = self.device.get("ID_VENDOR_FROM_DATABASE", "")
-            serial = self.device.get("ID_SERIAL", "")
             serial_short = str(self.__devi[0].get_id())
+            self.serial = f"{model}_{serial_short}"
 
             properties = { "MODEL_ID": model_id, "MODEL": model,
                     "MODEL_ENC": model_enc, "MODEL_DB": model_db,
                     "VENDOR_ID": vendor_id, "VENDOR": vendor,
                     "VENDOR_ENC": vendor_enc, "VENDOR_DB": vendor_db,
-                    "SERIAL": "{}_{}".format(model,serial_short), "SERIAL_SHORT": serial_short
+                    "SERIAL": serial, "SERIAL_SHORT": serial_short
                     }
             return properties
         else:
             return super().get_properties()
         
-        
-    
+    def get_name_unique(self):    
+        return f'{vendor_enc}_{self.serial}'
