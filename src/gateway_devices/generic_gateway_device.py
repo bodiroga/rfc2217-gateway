@@ -100,7 +100,10 @@ class GenericGatewayDevice(object):
         return self.device.get("ID_VENDOR_ENC")
 
     def get_name_unique(self):
-        return "RFC2217 ({}:{})".format(self.gateway_device.get_id_vendor(), self.gateway_device.get_id_model())
+        if (self.PORT_RANGE):
+            return "RFC2217 ({}:{}:{})".format(self.gateway_device.get_id_vendor(), self.gateway_device.get_id_model(),self.get_serial_short())
+        else:
+            return "RFC2217 ({}:{})".format(self.gateway_device.get_id_vendor(), self.gateway_device.get_id_model())
     
     def get_properties(self):
         model_id = self.device.get("ID_MODEL_ID", "")
