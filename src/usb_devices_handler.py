@@ -81,7 +81,7 @@ class UsbDevice(object):
 
     def start(self):
         logger.info("Device '{}' ('{}') - type {} - has been created on port {}".format(self.gateway_device.get_name(), self.gateway_device.get_serial_port(), self.gateway_device.__class__.__name__ , self.gateway_device.get_tcp_port()))
-        __type = "{}._rfc2217".format(self.gateway_device.get_protocol()) if self.gateway_device.get_protocol() else "_rfc2217"
+        __type = "_{}._rfc2217".format(self.gateway_device.get_protocol()) if self.gateway_device.get_protocol() else "_rfc2217"
         self.mdns_advertiser = MDNSAdvertiser(
                                 __type, self.gateway_device.get_name_unique(),
                                 self.gateway_device.get_tcp_port(), self.gateway_device.get_properties(),
