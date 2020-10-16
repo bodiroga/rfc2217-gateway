@@ -1,0 +1,7 @@
+#!/bin/bash
+SOURCE="${BASH_SOURCE[0]}"
+#echo $SOURCE
+SOURCE_DIR=$(dirname $SOURCE)
+#echo $SOURCE_DIR
+$SOURCE_DIR/activate
+pip install --requirement=requirements.txt

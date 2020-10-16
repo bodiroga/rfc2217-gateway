@@ -1,0 +1,12 @@
+#!/bin/bash
+SOURCE="${BASH_SOURCE[0]}"
+#echo $SOURCE
+SOURCE_DIR=$(dirname $SOURCE)
+#echo $SOURCE_DIR
+CURENT_DIR=$PWD
+cd $SOURCE_DIR/../
+#echo $PWD
+python -m venv rfc2217-gateway-env
+./bin/activate
+pip install --requirement=requirements.txt
+cd $CURRENT_DIR
