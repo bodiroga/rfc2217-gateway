@@ -3,5 +3,8 @@ SOURCE="${BASH_SOURCE[0]}"
 #echo $SOURCE
 SOURCE_DIR=$(dirname $SOURCE)
 #echo $SOURCE_DIR
-$SOURCE_DIR/activate
-python3 $SOURCE_DIR/../src/main.py
+CURENT_DIR=$PWD
+cd $SOURCE_DIR/../
+source rfc2217-gateway-env/bin/activate
+rfc2217-gateway-env/bin/python3 $SOURCE_DIR/../src/main.py
+cd $CURRENT_DIR
