@@ -53,11 +53,13 @@ class Redirector(object):
 
     def reader(self):
         """loop forever and copy serial->socket"""
+        self.log.info('Reader Started')
         while self.alive:
             try:
                 data = self.serial.read(self.serial.in_waiting or 1)
                 if data:
                     # escape outgoing data when needed (Telnet IAC (0xff) character)
+                    self.log.info(f'-->{list(self.rfc2217.escape(data))}')
                     self.write(b''.join(self.rfc2217.escape(data)))
             except socket.error as msg:
                 self.log.error('{}'.format(msg))
@@ -68,8 +70,16 @@ class Redirector(object):
 
     def write(self, data):
         """thread safe socket write with no data escaping. used to send telnet stuff"""
+        retries = 3
         with self._write_lock:
-            self.socket.sendall(data)
+            while retries:
+                try:
+
+                    self.socket.sendall(data)
+                    retries = 0
+                except:
+                    retries -= 1
+
 
     def writer(self):
         """loop forever and copy socket->serial"""
@@ -78,6 +88,7 @@ class Redirector(object):
                 data = self.socket.recv(1024)
                 if not data:
                     break
+                self.log.info(f'<--{list(self.rfc2217.filter(data))}')
                 self.serial.write(b''.join(self.rfc2217.filter(data)))
             except socket.timeout:
                 pass

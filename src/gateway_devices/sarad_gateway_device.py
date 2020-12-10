@@ -17,7 +17,7 @@ class SaradGatewayDevice(GenericGatewayDevice):
     ID_VENDOR_ENC = "SARAD"
     PORT_RANGE = [5560, 5580]
     PROTOCOL = "sarad-1688"
-    
+
     def __init__(self, device):
         super().__init__(device)
         self.__cluster = SaradCluster()
@@ -27,15 +27,15 @@ class SaradGatewayDevice(GenericGatewayDevice):
             logger.error(f"USB Device Access Failed {device}")
             pass
         self.get_properties()
-    
-        
+
+
     def get_serial_id(self):
-        
+
         if len(self.__devi)==1 :
             return "{}:{}".format(self.device.get("ID_MODEL", ""), self.__devi[0].get_id())
         else:
             return self.device.get("ID_SERIAL", "")
-        
+
     def get_properties(self):
         if len(self.__devi)==1 :
             self.model_id = self.device.get("ID_MODEL_ID", "")
@@ -47,7 +47,7 @@ class SaradGatewayDevice(GenericGatewayDevice):
             self.vendor_enc = self.device.get("ID_VENDOR_ENC", "")
             self.vendor_db = self.device.get("ID_VENDOR_FROM_DATABASE", "")
             self.serial_short = str(self.__devi[0].get_id())
-            self.serial = f'{self.vendor_enc}_{self.serial_short}'
+            self.serial = f'{self.serial_short}'
 
             properties = { "MODEL_ID": self.model_id, "MODEL": self.model,
                     "MODEL_ENC": self.model_enc, "MODEL_DB": self.model_db,
@@ -58,7 +58,7 @@ class SaradGatewayDevice(GenericGatewayDevice):
             return properties
         else:
             return super().get_properties()
-        
-    def get_name_unique(self): 
+
+    def get_name_unique(self):
         return f'{self.serial}'
 
