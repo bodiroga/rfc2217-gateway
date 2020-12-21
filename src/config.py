@@ -1,3 +1,3 @@
 config = {
-        'INTERFACE': 'enp0s3'
+        'INTERFACE': 'eth0'
         }

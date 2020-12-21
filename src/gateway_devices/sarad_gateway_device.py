@@ -2,7 +2,7 @@
 
 import logging
 from gateway_devices.generic_gateway_device import GenericGatewayDevice
-from SarI import SaradCluster
+from sarad.cluster import SaradCluster
 
 logger = logging.getLogger(__name__)
 
@@ -22,7 +22,7 @@ class SaradGatewayDevice(GenericGatewayDevice):
         super().__init__(device)
         self.__cluster = SaradCluster()
         try:
-            self.__devi = self.__cluster.update_connected_instruments([self.get_serial_port()])
+            self.__devi = self.__cluster.update_connected_instruments()
         except Exception:
             logger.error(f"USB Device Access Failed {device}")
             pass
@@ -61,4 +61,3 @@ class SaradGatewayDevice(GenericGatewayDevice):
 
     def get_name_unique(self):
         return f'{self.serial}'
-
