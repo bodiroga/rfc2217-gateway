@@ -5,8 +5,10 @@ from gateway_devices.generic_gateway_device import GenericGatewayDevice
 
 logger = logging.getLogger(__name__)
 
+
 def get_class():
     return EnoceanGatewayDevice
+
 
 class EnoceanGatewayDevice(GenericGatewayDevice):
 

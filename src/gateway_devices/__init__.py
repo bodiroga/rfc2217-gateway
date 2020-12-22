@@ -22,7 +22,8 @@ for file_name in os.listdir(folder):
         try:
             module = importlib.import_module(module_path)
         except Exception as e:
-            logger.error("Error loading device definition at {}: \n{}".format(module_path, e))
+            logger.error("Error loading device definition at {}: \n{}".format(
+                module_path, e))
         else:
             module_class = module.get_class()
             module_device_identifier = module_class.get_device_identifier()

@@ -80,7 +80,6 @@ class Redirector(object):
                 except:
                     retries -= 1
 
-
     def writer(self):
         """loop forever and copy socket->serial"""
         while self.alive:

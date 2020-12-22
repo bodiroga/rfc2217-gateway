@@ -38,13 +38,15 @@ class MDNSAdvertiser(object):
             return None
         interface = ni.ifaddresses(interface)
         if (2 not in interface) or (len(interface[2]) == 0):
-            logger.warning('Could not find IP of interface {}.'.format(interface))
+            logger.warning(
+                'Could not find IP of interface {}.'.format(interface))
             return None
         return interface[2][0]['addr']
 
     def start(self):
         self.alive = True
-        self.connectivity_thread = threading.Thread(target=self.__check_connectivity)
+        self.connectivity_thread = threading.Thread(
+            target=self.__check_connectivity)
         self.connectivity_thread.setDaemon(1)
         self.connectivity_thread.start()
 
@@ -63,14 +65,16 @@ class MDNSAdvertiser(object):
             time.sleep(1)
 
         if self.alive:
-            self.advertiser_thread = threading.Thread(target=self.__start_advertising)
+            self.advertiser_thread = threading.Thread(
+                target=self.__start_advertising)
             self.advertiser_thread.setDaemon(1)
             self.advertiser_thread.start()
             logger.debug("mDNS advertiser started")
 
     def __start_advertising(self):
         self.service = ServiceInfo("{}._tcp.local.".format(self.type),
-                                   "{}.{}._tcp.local.".format(self.name, self.type),
+                                   "{}.{}._tcp.local.".format(
+                                       self.name, self.type),
                                    port=self.port,
                                    weight=0,
                                    priority=0,

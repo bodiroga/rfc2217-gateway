@@ -8,8 +8,11 @@ import config
 
 from usb_devices_handler import UsbDevicesHandler
 
-#logging.basicConfig(format='%(asctime)s %(levelname)-6s - %(name)-16s - %(message)s', level=logging.INFO)
-logging.basicConfig(format='%(asctime)s,%(msecs)d %(levelname)-8s [%(filename)s:%(lineno)d] %(message)s', level=logging.INFO)
+# logging.basicConfig(format='%(asctime)s %(levelname)-6s - %(name)-16s - %(message)s', level=logging.INFO)
+logging.basicConfig(
+    format=
+    '%(asctime)s,%(msecs)d %(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',
+    level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 INTERFACE = config.config.get("INTERFACE") or "wlp2s0"
@@ -19,7 +22,8 @@ def usb_device_event(action, device):
     if not devices_handler.is_valid_device(device):
         return
 
-    logger.debug("Device at '{}' is a valid device".format(device.get("DEVNAME")))
+    logger.debug("Device at '{}' is a valid device".format(
+        device.get("DEVNAME")))
     if action == "add":
         devices_handler.create_usb_device(device)
     elif action == "remove":

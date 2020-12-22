@@ -6,8 +6,10 @@ from sarad.cluster import SaradCluster
 
 logger = logging.getLogger(__name__)
 
+
 def get_class():
     return FTDIGatewayDevice
+
 
 class FTDIGatewayDevice(GenericGatewayDevice):
 
@@ -29,16 +31,16 @@ class FTDIGatewayDevice(GenericGatewayDevice):
             pass
         self.get_properties()
 
-
     def get_serial_id(self):
 
-        if len(self.__devi)==1 :
-            return "{}:{}".format(self.device.get("ID_MODEL", ""), self.__devi[0].get_id())
+        if len(self.__devi) == 1:
+            return "{}:{}".format(self.device.get("ID_MODEL", ""),
+                                  self.__devi[0].get_id())
         else:
             return self.device.get("ID_SERIAL", "")
 
     def get_properties(self):
-        if len(self.__devi)==1 :
+        if len(self.__devi) == 1:
             self.model_id = self.device.get("ID_MODEL_ID", "")
             self.model = self.device.get("ID_MODEL", "")
             self.model_enc = self.device.get("ID_MODEL_ENC", "")
@@ -50,12 +52,18 @@ class FTDIGatewayDevice(GenericGatewayDevice):
             self.serial_short = str(self.__devi[0].get_id())
             self.serial = f'{self.serial_short}'
 
-            properties = { "MODEL_ID": self.model_id, "MODEL": self.model,
-                    "MODEL_ENC": self.model_enc, "MODEL_DB": self.model_db,
-                    "VENDOR_ID": self.vendor_id, "VENDOR": self.vendor,
-                    "VENDOR_ENC": self.vendor_enc, "VENDOR_DB": self.vendor_db,
-                    "SERIAL": "{}_{}".format(self.model,self.serial_short), "SERIAL_SHORT": self.serial_short
-                    }
+            properties = {
+                "MODEL_ID": self.model_id,
+                "MODEL": self.model,
+                "MODEL_ENC": self.model_enc,
+                "MODEL_DB": self.model_db,
+                "VENDOR_ID": self.vendor_id,
+                "VENDOR": self.vendor,
+                "VENDOR_ENC": self.vendor_enc,
+                "VENDOR_DB": self.vendor_db,
+                "SERIAL": "{}_{}".format(self.model, self.serial_short),
+                "SERIAL_SHORT": self.serial_short
+            }
             return properties
         else:
             return super().get_properties()

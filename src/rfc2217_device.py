@@ -10,6 +10,7 @@ from rfc2217_redirector import Redirector
 
 logger = logging.getLogger(__name__)
 
+
 class RFC2217Device(object):
     def __init__(self, device_path, tcp_port):
         self.device_path = device_path
@@ -51,11 +52,13 @@ class RFC2217Device(object):
         self.s_port.close()
         self.s_socket.shutdown(socket.SHUT_RDWR)
         self.s_socket.close()
-        logger.debug("RFCDevice '{}' completely stopped".format(self.device_path))
+        logger.debug("RFCDevice '{}' completely stopped".format(
+            self.device_path))
 
     def __start(self):
-        logger.debug("RFCDevice ('{}') main loop started".format(self.device_path))
-        while(self.started):
+        logger.debug("RFCDevice ('{}') main loop started".format(
+            self.device_path))
+        while (self.started):
             try:
                 client_socket, addr = self.s_socket.accept()
             except BlockingIOError:
@@ -80,4 +83,5 @@ class RFC2217Device(object):
                     self.s_port.dtr = False
                 except:
                     pass
-        logger.debug("RFCDevice ('{}') main loop stopped".format(self.device_path))
+        logger.debug("RFCDevice ('{}') main loop stopped".format(
+            self.device_path))
