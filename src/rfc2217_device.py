@@ -10,7 +10,7 @@ from rfc2217_redirector import Redirector
 logger = logging.getLogger(__name__)
 
 
-class RFC2217Device(object):
+class RFC2217Device():
     def __init__(self, device_path, tcp_port):
         self.device_path = device_path
         self.tcp_port = tcp_port

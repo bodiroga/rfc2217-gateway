@@ -9,7 +9,7 @@ from rfc2217_device import RFC2217Device
 logger = logging.getLogger(__name__)
 
 
-class UsbDevicesHandler(object):
+class UsbDevicesHandler():
     def __init__(self, network_interface):
         self.network_interface = network_interface
         self.valid_gateways = gateway_devices.__all__
@@ -70,7 +70,7 @@ class UsbDevicesHandler(object):
         return self.valid_gateways.get(device_identifier, None)
 
 
-class UsbDevice(object):
+class UsbDevice():
     def __init__(self, gateway_device, network_interface):
         self.gateway_device = gateway_device
         self.network_interface = network_interface

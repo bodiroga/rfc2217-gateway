@@ -11,7 +11,7 @@ from zeroconf import ServiceInfo, Zeroconf
 logger = logging.getLogger(__name__)
 
 
-class MDNSAdvertiser(object):
+class MDNSAdvertiser():
     def __init__(self, type_, name, port, properties, server, interface):
         self.type = type_
         self.name = name

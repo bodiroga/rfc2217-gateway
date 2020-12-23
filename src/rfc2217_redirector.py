@@ -14,7 +14,7 @@ import threading
 import serial.rfc2217
 
 
-class Redirector(object):
+class Redirector():
     def __init__(self, serial_instance, socket, debug=False):
         self.serial = serial_instance
         self.socket = socket
