@@ -1,8 +1,13 @@
-#!/usr/bin/env python3
+"""Define namespace package gateway_devices.
+
+Every module defines a class of devices that will be published.
+__all__ is a variable in the namespace of this package
+providing a dictionary of module classes."""
 
 import logging
 import importlib
 import os
+from typing import List
 
 logger = logging.getLogger("gateway_devices")
 
@@ -10,21 +15,21 @@ folder = os.path.dirname(os.path.abspath(__file__))
 
 EXCLUDED_FILE_NAMES = ["__init__.py", "generic_gateway_device.py"]
 
-__all__ = {}
+__all__: List[str] = []
 
 for file_name in os.listdir(folder):
-    file_path = "/".join((folder, file_name))
-    if os.path.isfile(file_path):
+    FILE_PATH = "/".join((folder, file_name))
+    if os.path.isfile(FILE_PATH):
         if file_name in EXCLUDED_FILE_NAMES:
             continue
         file_base = file_name.replace('.py', '')
-        module_path = "{}.{}".format(__name__, file_base)
+        MODULE_PATH = "{}.{}".format(__name__, file_base)
         try:
-            module = importlib.import_module(module_path)
-        except Exception as e:
-            logger.error("Error loading device definition at {}: \n{}".format(
-                module_path, e))
+            module = importlib.import_module(MODULE_PATH)
+        except Exception as broad_except:  # pylint: disable=broad-except
+            logger.error("Error loading device definition at %s: \n%s",
+                         MODULE_PATH, broad_except)
         else:
-            module_class = module.get_class()
+            module_class = module.get_class()  # type: ignore
             module_device_identifier = module_class.get_device_identifier()
             __all__[module_device_identifier] = module_class
