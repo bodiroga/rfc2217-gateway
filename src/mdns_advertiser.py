@@ -34,12 +34,11 @@ class MDNSAdvertiser(object):
         """
 
         if interface not in ni.interfaces():
-            logger.error('Could not find interface {}.'.format(interface))
+            logger.error('Could not find interface %s.', interface)
             return None
         interface = ni.ifaddresses(interface)
         if (2 not in interface) or (len(interface[2]) == 0):
-            logger.warning(
-                'Could not find IP of interface {}.'.format(interface))
+            logger.warning('Could not find IP of interface %s.', interface)
             return None
         return interface[2][0]['addr']
 

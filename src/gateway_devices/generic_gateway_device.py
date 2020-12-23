@@ -1,14 +1,13 @@
 #!/usr/bin/env python3
 
 import hashlib
-import json
 import logging
 import threading
 
 logger = logging.getLogger(__name__)
 
 
-class GenericGatewayDevice(object):
+class GenericGatewayDevice():
 
     NAME = ""
     ID_MODEL_ID = ""
@@ -55,7 +54,7 @@ class GenericGatewayDevice(object):
 
     def __del__(self):
         with self._lock:
-            if (self._isPortRangeInit):
+            if self._isPortRangeInit:
                 self._availablePorts.append(self._selectedPort)
 
     @classmethod
@@ -97,7 +96,7 @@ class GenericGatewayDevice(object):
         return self.device.get("ID_VENDOR_ENC")
 
     def get_name_unique(self):
-        if (self.PORT_RANGE):
+        if self.PORT_RANGE:
             return "RFC2217 ({}:{}:{})".format(
                 self.gateway_device.get_id_vendor(),
                 self.gateway_device.get_id_model(), self.get_serial_short())

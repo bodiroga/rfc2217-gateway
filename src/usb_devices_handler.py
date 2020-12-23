@@ -24,7 +24,7 @@ class UsbDevicesHandler(object):
     def create_usb_device(self, device):
         ident = device.get("DEVNAME")
         if ident in self.handled_devices:
-            logger.warn("Device at '{}' already handled".format(ident))
+            logger.warning("Device at '%s' already handled", ident)
             return
 
         constructor = self.__get_gateway_constructor(device)
@@ -42,7 +42,7 @@ class UsbDevicesHandler(object):
 
         device = self.handled_devices.get(ident, None)
         if not device:
-            logger.warn("Device at '{}' not handled".format(ident))
+            logger.warning("Device at '%s' not handled", ident)
             return
 
         device.stop()
@@ -79,11 +79,11 @@ class UsbDevice(object):
 
     def start(self):
         logger.info(
-            "Device '{}' ('{}') - type {} - has been created on port {}".
-            format(self.gateway_device.get_name(),
-                   self.gateway_device.get_serial_port(),
-                   self.gateway_device.__class__.__name__,
-                   self.gateway_device.get_tcp_port()))
+            "Device '%s' ('%s') - type %s - has been created on port %s",
+            self.gateway_device.get_name(),
+            self.gateway_device.get_serial_port(),
+            self.gateway_device.__class__.__name__,
+            self.gateway_device.get_tcp_port())
         __type = "_{}._rfc2217".format(self.gateway_device.get_protocol(
         )) if self.gateway_device.get_protocol() else "_rfc2217"
         self.mdns_advertiser = MDNSAdvertiser(
@@ -101,9 +101,9 @@ class UsbDevice(object):
             self.rfc2217_connection.stop()
         if self.mdns_advertiser:
             self.mdns_advertiser.stop()
-        logger.info("Device '{}' ('{}') has been deleted".format(
+        logger.info("Device '%s' ('%s') has been deleted",
             self.gateway_device.get_name(),
-            self.gateway_device.get_serial_port()))
+            self.gateway_device.get_serial_port())
 
     def get_serial_port(self):
         return self.gateway_device.get_serial_port()

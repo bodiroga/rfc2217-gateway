@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 
 import logging
-import serial
 import time
 import threading
+import serial
 from gateway_devices.generic_gateway_device import GenericGatewayDevice
 
 logger = logging.getLogger(__name__)
@@ -34,7 +34,7 @@ class ZWavePlusGatewayDevice(GenericGatewayDevice):
         return properties
 
 
-class ZWaveHomeIdHandler(object):
+class ZWaveHomeIdHandler():
 
     NAK = b'\x15'
     MEMORY_ID_COMMAND = b'\x01\x03\x00\x20\xdc'
@@ -67,7 +67,7 @@ class ZWaveHomeIdHandler(object):
         self.stop()
 
 
-class ZWaveHomeIdReceiver(object):
+class ZWaveHomeIdReceiver():
 
     SEARCH_SOF = 0
     SEARCH_LEN = 1
@@ -102,38 +102,38 @@ class ZWaveHomeIdReceiver(object):
 
     def __zwave_reader(self):
         logger.debug("ZWave Reader thread started")
-        while (self.reading):
+        while self.reading:
             try:
                 next_byte = self.zwave_connection.read(1)
             except TypeError:
                 logger.debug("Serial connection error")
                 break
 
-            if (next_byte == self.TIMEOUT):
+            if next_byte == self.TIMEOUT:
                 continue
 
-            if (self.rx_state == self.SEARCH_SOF):
-                if (next_byte == self.SOF):
+            if self.rx_state == self.SEARCH_SOF:
+                if next_byte == self.SOF:
                     logger.debug("SOF detected, fine")
                     self.rx_state = self.SEARCH_LEN
-                elif (next_byte == self.ACK):
+                elif next_byte == self.ACK:
                     logger.debug("ACK detected, fine")
-                elif (next_byte in [self.NAK, self.CAN]):
+                elif next_byte in [self.NAK, self.CAN]:
                     logger.error("Unexpected command")
                 else:
-                    logger.error("Unkown '{}'".format(next_byte))
-            elif (self.rx_state == self.SEARCH_LEN):
+                    logger.error("Unkown '%s'", next_byte)
+            elif self.rx_state == self.SEARCH_LEN:
                 self.message_length = int.from_bytes(next_byte, "big")
                 self.rx_state = self.SEARCH_DAT
-            elif (self.rx_state == self.SEARCH_DAT):
+            elif self.rx_state == self.SEARCH_DAT:
                 self.rx_buffer.append(int.from_bytes(next_byte, "big"))
                 self.rx_length += 1
 
-                if (self.rx_length < self.message_length):
+                if self.rx_length < self.message_length:
                     continue
 
                 home_id = self.__get_home_id(self.rx_buffer)
-                if (home_id != -1):
+                if home_id != -1:
                     self.rx_buffer = []
                     self.rx_state = self.SEARCH_SOF
                     self.rx_length = 0
@@ -160,5 +160,5 @@ class ZWaveHomeIdReceiver(object):
             hex_value = hex(message[i])
             home_id += hex_value[-2:]
 
-        logger.debug("Home ID: {}".format(home_id))
+        logger.debug("Home ID: %s", home_id)
         return home_id
