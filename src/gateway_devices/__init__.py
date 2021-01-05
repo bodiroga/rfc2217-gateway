@@ -1,13 +1,13 @@
 """Define namespace package gateway_devices.
 
 Every module defines a class of devices that will be published.
-__all__ is a variable in the namespace of this package
+device_classes is a variable in the namespace of this package
 providing a dictionary of module classes."""
 
 import logging
 import importlib
 import os
-from typing import List
+from typing import Dict, Any
 
 logger = logging.getLogger("gateway_devices")
 
@@ -15,7 +15,7 @@ folder = os.path.dirname(os.path.abspath(__file__))
 
 EXCLUDED_FILE_NAMES = ["__init__.py", "generic_gateway_device.py"]
 
-__all__: List[str] = []
+device_classes: Dict[str, Any] = {}
 
 for file_name in os.listdir(folder):
     FILE_PATH = "/".join((folder, file_name))
@@ -32,4 +32,4 @@ for file_name in os.listdir(folder):
         else:
             module_class = module.get_class()  # type: ignore
             module_device_identifier = module_class.get_device_identifier()
-            __all__[module_device_identifier] = module_class
+            device_classes[module_device_identifier] = module_class

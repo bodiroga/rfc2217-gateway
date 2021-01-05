@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+"""SARAD instruments with integrated FT232 USB serial converter"""
 
 import logging
 from sarad.cluster import SaradCluster
@@ -8,11 +8,12 @@ logger = logging.getLogger(__name__)
 
 
 def get_class():
+    """Returns the class provided by this module"""
     return SaradGatewayDevice
 
 
 class SaradGatewayDevice(GenericGatewayDevice):
-
+    """SARAD instrument with RTM-1688 protocol"""
     NAME = "SARAD"
     ID_MODEL_ID = "6001"
     ID_VENDOR_ID = "0403"
@@ -25,7 +26,7 @@ class SaradGatewayDevice(GenericGatewayDevice):
         self.__cluster = SaradCluster()
         try:
             self.__devi = self.__cluster.update_connected_instruments()
-        except Exception:
+        except Exception:  # pylint: disable = broad-except
             logger.error("USB Device Access Failed %s", device)
         self.get_properties()
 
@@ -33,7 +34,7 @@ class SaradGatewayDevice(GenericGatewayDevice):
 
         if len(self.__devi) == 1:
             return "{}:{}".format(self.device.get("ID_MODEL", ""),
-                                  self.__devi[0].get_id())
+                                  self.__devi[0].device_id)
         return self.device.get("ID_SERIAL", "")
 
     def get_properties(self):
@@ -46,7 +47,7 @@ class SaradGatewayDevice(GenericGatewayDevice):
             self.vendor = self.device.get("ID_VENDOR_FROM_DATABASE", "")
             self.vendor_enc = self.device.get("ID_VENDOR_ENC", "")
             self.vendor_db = self.device.get("ID_VENDOR_FROM_DATABASE", "")
-            self.serial_short = str(self.__devi[0].get_id())
+            self.serial_short = str(self.__devi[0].device_id)
             self.serial = f'{self.serial_short}'
 
             properties = {

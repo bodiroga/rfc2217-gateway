@@ -1,23 +1,24 @@
-#!/usr/bin/env python3
+"""Generic FTDI FT232 serial to USB converter"""
 
 import logging
+from typing import Type
 from sarad.cluster import SaradCluster
 from gateway_devices.generic_gateway_device import GenericGatewayDevice
 
 logger = logging.getLogger(__name__)
 
 
-def get_class():
+def get_class() -> Type[FTDIGatewayDevice]:
+    """Returns the class provided by this module"""
     return FTDIGatewayDevice
 
 
 class FTDIGatewayDevice(GenericGatewayDevice):
-
+    """FT232 serial to USB converter"""
     NAME = "FT232R USB UART"
     ID_MODEL_ID = "6001"
     ID_VENDOR_ID = "0403"
     ID_VENDOR_ENC = "FTDI"
-
     PORT_RANGE = [5600, 5640]
     PROTOCOL = "unknown"
 
@@ -26,15 +27,14 @@ class FTDIGatewayDevice(GenericGatewayDevice):
         self.__cluster = SaradCluster()
         try:
             self.__devi = self.__cluster.update_connected_instruments()
-        except Exception:
-            logger.error("USB Device Access Failed %s", device)
+        except Exception:       # pylint: disable=broad-except
+            logger.error("USB device access failed %s", device)
         self.get_properties()
 
     def get_serial_id(self):
-
         if len(self.__devi) == 1:
             return "{}:{}".format(self.device.get("ID_MODEL", ""),
-                                  self.__devi[0].get_id())
+                                  self.__devi[0].device_id)
         return self.device.get("ID_SERIAL", "")
 
     def get_properties(self):
@@ -47,7 +47,7 @@ class FTDIGatewayDevice(GenericGatewayDevice):
             self.vendor = self.device.get("ID_VENDOR_FROM_DATABASE", "")
             self.vendor_enc = self.device.get("ID_VENDOR_ENC", "")
             self.vendor_db = self.device.get("ID_VENDOR_FROM_DATABASE", "")
-            self.serial_short = str(self.__devi[0].get_id())
+            self.serial_short = str(self.__devi[0].device_id)
             self.serial = f'{self.serial_short}'
 
             properties = {

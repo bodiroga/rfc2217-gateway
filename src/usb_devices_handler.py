@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 class UsbDevicesHandler():
     def __init__(self, network_interface):
         self.network_interface = network_interface
-        self.valid_gateways = gateway_devices.__all__
+        self.valid_gateways = gateway_devices.device_classes
         self.handled_devices = {}
 
     def is_valid_device(self, device):

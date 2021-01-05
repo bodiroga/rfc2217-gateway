@@ -3,6 +3,7 @@
 import hashlib
 import logging
 import threading
+from typing import List
 
 logger = logging.getLogger(__name__)
 
@@ -13,12 +14,12 @@ class GenericGatewayDevice():
     ID_MODEL_ID = ""
     ID_VENDOR_ID = ""
     ID_VENDOR_ENC = ""
-    PORT = ""
-    PORT_RANGE = []
+    PORT: int = 0
+    PORT_RANGE: List[int] = []
     PROTOCOL = ""
 
     _isPortRangeInit = False
-    _availablePorts = []
+    _availablePorts: List[int] = []
     _lock = threading.Lock()
 
     def __init__(self, device):
