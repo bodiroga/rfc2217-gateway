@@ -3,13 +3,14 @@
 import logging
 import time
 import threading
+from typing import Type
 import serial
 from gateway_devices.generic_gateway_device import GenericGatewayDevice
 
 logger = logging.getLogger(__name__)
 
 
-def get_class():
+def get_class() -> Type[GenericGatewayDevice]:
     return ZWavePlusGatewayDevice
 
 

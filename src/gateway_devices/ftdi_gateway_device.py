@@ -8,7 +8,7 @@ from gateway_devices.generic_gateway_device import GenericGatewayDevice
 logger = logging.getLogger(__name__)
 
 
-def get_class() -> Type[FTDIGatewayDevice]:
+def get_class() -> Type[GenericGatewayDevice]:
     """Returns the class provided by this module"""
     return FTDIGatewayDevice
 
