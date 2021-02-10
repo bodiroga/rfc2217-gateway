@@ -7,4 +7,5 @@ CURENT_DIR=$PWD
 cd $SOURCE_DIR/../
 source rfc2217-gateway-env/bin/activate
 rfc2217-gateway-env/bin/pip install --requirement=requirements.txt
+rfc2217-gateway-env/bin/pip install -e git+https://github.com/SARAD-GmbH/data_collector#egg=data_collector
 cd $CURRENT_DIR
