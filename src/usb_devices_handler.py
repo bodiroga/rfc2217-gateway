@@ -2,6 +2,7 @@
 
 import hashlib
 import logging
+
 import gateway_devices
 from mdns_advertiser import MDNSAdvertiser
 from rfc2217_device import RFC2217Device
@@ -9,7 +10,7 @@ from rfc2217_device import RFC2217Device
 logger = logging.getLogger(__name__)
 
 
-class UsbDevicesHandler():
+class UsbDevicesHandler:
     def __init__(self, network_interface):
         self.network_interface = network_interface
         self.valid_gateways = gateway_devices.device_classes
@@ -61,7 +62,7 @@ class UsbDevicesHandler():
         if not id_model or not id_vendor or not enc_vendor:
             return None
         identifier_string = id_model + id_vendor + enc_vendor
-        return hashlib.sha224(identifier_string.encode('utf-8')).hexdigest()
+        return hashlib.sha224(identifier_string.encode("utf-8")).hexdigest()
 
     def __get_gateway_constructor(self, device):
         device_identifier = self.__get_device_identifier(device)
@@ -70,7 +71,7 @@ class UsbDevicesHandler():
         return self.valid_gateways.get(device_identifier, None)
 
 
-class UsbDevice():
+class UsbDevice:
     def __init__(self, gateway_device, network_interface):
         self.gateway_device = gateway_device
         self.network_interface = network_interface
@@ -83,16 +84,20 @@ class UsbDevice():
             self.gateway_device.get_name(),
             self.gateway_device.get_serial_port(),
             self.gateway_device.__class__.__name__,
-            self.gateway_device.get_tcp_port())
-        __type = "_{}._rfc2217".format(self.gateway_device.get_protocol(
-        )) if self.gateway_device.get_protocol() else "_rfc2217"
-        self.mdns_advertiser = MDNSAdvertiser(
-            __type, self.gateway_device.get_name_unique(),
             self.gateway_device.get_tcp_port(),
-            self.gateway_device.get_properties(), None, self.network_interface)
+        )
+        __type = "_rfc2217"
+        self.mdns_advertiser = MDNSAdvertiser(
+            __type,
+            self.gateway_device.get_name_unique(),
+            self.gateway_device.get_tcp_port(),
+            self.gateway_device.get_properties(),
+            None,
+            self.network_interface,
+        )
         self.rfc2217_connection = RFC2217Device(
-            self.gateway_device.get_serial_port(),
-            self.gateway_device.get_tcp_port())
+            self.gateway_device.get_serial_port(), self.gateway_device.get_tcp_port()
+        )
         self.rfc2217_connection.start()
         self.mdns_advertiser.start()
 
@@ -101,9 +106,11 @@ class UsbDevice():
             self.rfc2217_connection.stop()
         if self.mdns_advertiser:
             self.mdns_advertiser.stop()
-        logger.info("Device '%s' ('%s') has been deleted",
+        logger.info(
+            "Device '%s' ('%s') has been deleted",
             self.gateway_device.get_name(),
-            self.gateway_device.get_serial_port())
+            self.gateway_device.get_serial_port(),
+        )
 
     def get_serial_port(self):
         return self.gateway_device.get_serial_port()
