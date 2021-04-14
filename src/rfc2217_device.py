@@ -4,13 +4,15 @@ import logging
 import socket
 import threading
 import time
+
 import serial
+
 from rfc2217_redirector import Redirector
 
 logger = logging.getLogger(__name__)
 
 
-class RFC2217Device():
+class RFC2217Device:
     def __init__(self, device_path, tcp_port):
         self.device_path = device_path
         self.tcp_port = tcp_port
@@ -31,7 +33,7 @@ class RFC2217Device():
     def create_socket(self, port):
         srv = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         srv.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        srv.bind(('', port))
+        srv.bind(("", port))
         srv.listen(1)
         srv.setblocking(0)
 
@@ -61,7 +63,7 @@ class RFC2217Device():
             except BlockingIOError:
                 time.sleep(0.5)
                 continue
-            logger.debug('Connected by %s:%s', addr[0], addr[1])
+            logger.debug("Connected by %s:%s", addr[0], addr[1])
             client_socket.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
             self.s_port.dtr = True
             self.s_port.rts = True
