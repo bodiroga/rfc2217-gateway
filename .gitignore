@@ -137,3 +137,4 @@ dmypy.json
 # Cython debug symbols
 cython_debug/
 /rfc2217-gateway-env/*
+/tmp/
