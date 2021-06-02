@@ -29,7 +29,9 @@ class FTDIGatewayDevice(GenericGatewayDevice):
         super().__init__(device)
         self.__cluster = SaradCluster()
         try:
-            self.__devi = self.__cluster.update_connected_instruments()
+            self.__devi = self.__cluster.update_connected_instruments(
+                [device.get("DEVNAME")]
+            )
         except Exception:  # pylint: disable=broad-except
             logger.error("USB device access failed %s", device)
         self.get_properties()
