@@ -2,7 +2,7 @@
 
 import logging
 from gateway_devices.generic_gateway_device import GenericGatewayDevice
-from SarI import SaradCluster
+from sarad.cluster import SaradCluster
 
 logger = logging.getLogger(__name__)
 
@@ -21,9 +21,9 @@ class FTDIGatewayDevice(GenericGatewayDevice):
 
     def __init__(self, device):
         super().__init__(device)
-        self.__cluster = SaradCluster()
+        self.__cluster = SaradCluster([self.get_serial_port()])
         try:
-            self.__devi = self.__cluster.update_connected_instruments([self.get_serial_port()])
+            self.__devi = self.__cluster.update_connected_instruments()
         except Exception:
             logger.error(f"USB Device Access Failed {device}")
             pass
@@ -38,7 +38,7 @@ class FTDIGatewayDevice(GenericGatewayDevice):
             return self.device.get("ID_SERIAL", "")
 
     def get_properties(self):
-        if len(self.__devi)==1 :
+        if len(self.__devi)>=1 :
             self.model_id = self.device.get("ID_MODEL_ID", "")
             self.model = self.device.get("ID_MODEL", "")
             self.model_enc = self.device.get("ID_MODEL_ENC", "")
@@ -47,7 +47,7 @@ class FTDIGatewayDevice(GenericGatewayDevice):
             self.vendor = self.device.get("ID_VENDOR_FROM_DATABASE", "")
             self.vendor_enc = self.device.get("ID_VENDOR_ENC", "")
             self.vendor_db = self.device.get("ID_VENDOR_FROM_DATABASE", "")
-            self.serial_short = str(self.__devi[0].get_id())
+            self.serial_short = str(self.__devi[0].device_id)
             self.serial = f'{self.serial_short}'
 
             properties = { "MODEL_ID": self.model_id, "MODEL": self.model,
