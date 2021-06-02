@@ -1,15 +1,22 @@
-#!/usr/bin/env python3
+"""SARAD instruments with integrated FT232 USB serial converter"""
 
 import logging
-from gateway_devices.generic_gateway_device import GenericGatewayDevice
+from typing import Type
+
 from sarad.cluster import SaradCluster
+
+from gateway_devices.generic_gateway_device import GenericGatewayDevice
 
 logger = logging.getLogger(__name__)
 
-def get_class():
+
+def get_class() -> Type[GenericGatewayDevice]:
+    """Returns the class provided by this module"""
     return SaradGatewayDevice
 
+
 class SaradGatewayDevice(GenericGatewayDevice):
+    """SARAD instrument with RTM-1688 protocol"""
 
     NAME = "SARAD"
     ID_MODEL_ID = "6001"
@@ -20,45 +27,36 @@ class SaradGatewayDevice(GenericGatewayDevice):
 
     def __init__(self, device):
         super().__init__(device)
-        self.__cluster = SaradCluster([self.get_serial_port()])
+        self.__cluster = SaradCluster()
         try:
-            logger.info(f"Attempting to access {self.get_serial_port()}")
             self.__devi = self.__cluster.update_connected_instruments()
-        except Exception:
-            logger.error(f"USB Device Access Failed {device}")
-            pass
+        except Exception:  # pylint: disable = broad-except
+            logger.error("USB Device Access Failed %s", device)
         self.get_properties()
 
-
     def get_serial_id(self):
-        if len(self.__devi)==1 :
-            return "{}:{}".format(self.device.get("ID_MODEL", ""), self.__devi[0].get_id())
-        else:
-            return self.device.get("ID_SERIAL", "")
+        if len(self.__devi) == 1:
+            return f"{self.device.get('ID_MODEL', '')}:{self.__devi[0].device_id}"
+        return self.device.get("ID_SERIAL", "")
 
     def get_properties(self):
-        if len(self.__devi)>=1 :
-            self.model_id = self.device.get("ID_MODEL_ID", "")
-            self.model = self.device.get("ID_MODEL", "")
-            self.model_enc = self.device.get("ID_MODEL_ENC", "")
-            self.model_db = self.device.get("ID_MODEL_FROM_DATABASE", "")
-            self.vendor_id = self.device.get("ID_VENDOR_ID", "")
-            self.vendor = self.device.get("ID_VENDOR_FROM_DATABASE", "")
-            self.vendor_enc = self.device.get("ID_VENDOR_ENC", "")
-            self.vendor_db = self.device.get("ID_VENDOR_FROM_DATABASE", "")
-            self.serial_short = str(self.__devi[0].device_id)
-            self.serial = f'{self.serial_short}'
-
-            properties = { "MODEL_ID": self.model_id, "MODEL": self.model,
-                    "MODEL_ENC": self.model_enc, "MODEL_DB": self.model_db,
-                    "VENDOR_ID": self.vendor_id, "VENDOR": self.vendor,
-                    "VENDOR_ENC": self.vendor_enc, "VENDOR_DB": self.vendor_db,
-                    "SERIAL": "{}_{}".format(self.model,self.serial_short), "SERIAL_SHORT": self.serial_short
-                    }
-            return properties
-        else:
-            return super().get_properties()
+        if len(self.__devi) == 1:
+            model = self.device.get("ID_MODEL", "")
+            serial_short = f"{self.__devi[0].device_id}.{self.get_protocol()}"
+            self.serial = serial_short
+            return {
+                "MODEL_ID": self.device.get("ID_MODEL_ID", ""),
+                "MODEL": model,
+                "MODEL_ENC": self.device.get("ID_MODEL_ENC", ""),
+                "MODEL_DB": self.device.get("ID_MODEL_FROM_DATABASE", ""),
+                "VENDOR_ID": self.device.get("ID_VENDOR_ID", ""),
+                "VENDOR": self.device.get("ID_VENDOR_FROM_DATABASE", ""),
+                "VENDOR_ENC": self.device.get("ID_VENDOR_ENC", ""),
+                "VENDOR_DB": self.device.get("ID_VENDOR_FROM_DATABASE", ""),
+                "SERIAL": f"{model}_{serial_short}",
+                "SERIAL_SHORT": f"{self.__devi[0].device_id}.{self.get_protocol()}",
+            }
+        return super().get_properties()
 
     def get_name_unique(self):
-        return f'{self.serial}'
-
+        return f"{self.serial}"

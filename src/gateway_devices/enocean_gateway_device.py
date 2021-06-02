@@ -1,15 +1,19 @@
-#!/usr/bin/env python3
+"""Devices from EnOcean GmbH"""
 
 import logging
+from typing import Type
 from gateway_devices.generic_gateway_device import GenericGatewayDevice
 
 logger = logging.getLogger(__name__)
 
-def get_class():
+
+def get_class() -> Type[GenericGatewayDevice]:
+    """Returns the class provided by this module"""
     return EnoceanGatewayDevice
 
-class EnoceanGatewayDevice(GenericGatewayDevice):
 
+class EnoceanGatewayDevice(GenericGatewayDevice):
+    """USB parameters identifying EnOcean devices"""
     NAME = "Enocean"
     ID_MODEL_ID = "6001"
     ID_VENDOR_ID = "0403"

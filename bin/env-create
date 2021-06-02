@@ -9,4 +9,5 @@ cd $SOURCE_DIR/../
 python -m venv rfc2217-gateway-env
 source rfc2217-gateway-env/bin/activate
 rfc2217-gateway-env/bin/pip install --requirement=requirements.txt
+rfc2217-gateway-env/bin/pip install -e git+https://www.github.com/SARAD-GmbH/data_collector
 cd $CURRENT_DIR

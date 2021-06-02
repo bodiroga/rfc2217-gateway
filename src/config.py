@@ -1,3 +1,1 @@
-config = {
-        'INTERFACE': 'enp0s3'
-        }
+config = {'INTERFACE': 'eth0'}
