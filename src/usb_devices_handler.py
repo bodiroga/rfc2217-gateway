@@ -66,6 +66,7 @@ class UsbDevicesHandler:
 
     def __get_gateway_constructor(self, device):
         device_identifier = self.__get_device_identifier(device)
+        logger.debug("Device identifier: %s", device_identifier)
         if not device_identifier:
             return None
         return self.valid_gateways.get(device_identifier, None)
@@ -74,6 +75,7 @@ class UsbDevicesHandler:
 class UsbDevice:
     def __init__(self, gateway_device, network_interface):
         self.gateway_device = gateway_device
+        logger.debug("Gateway device: %s", gateway_device)
         self.network_interface = network_interface
         self.rfc2217_connection = None
         self.mdns_advertiser = None
