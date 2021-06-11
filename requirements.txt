@@ -1,4 +1,4 @@
 pyudev
 pyserial
-zeroconf==0.26
+zeroconf
 netifaces
